@@ -1,54 +1,37 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Container, Typography } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import axiosInstance from '../axiosConfig';
+import { Link } from 'react-router-dom';
+import { Container, Typography, List, ListItem, ListItemText, Button } from '@mui/material';
 
-function TimeOffForm() {
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const navigate = useNavigate();
+function UserList() {
+  const [users, setUsers] = useState([]);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    axios.post('/timeoffs', { startDate, endDate })
-      .then(() => navigate('/'))
-      .catch(error => console.error('Error creating time-off:', error));
-  };
+  useEffect(() => {
+    axiosInstance.get('/users')
+      .then(response => setUsers(response.data))
+      .catch(error => console.error('Error fetching users:', error));
+  }, []);
 
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" component="h1" gutterBottom>
-        Add Time-Off
+        User List
       </Typography>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          label="Start Date"
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          fullWidth
-          margin="normal"
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-        <TextField
-          label="End Date"
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          fullWidth
-          margin="normal"
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-        <Button type="submit" variant="contained" color="primary" fullWidth>
-          Add Time-Off
-        </Button>
-      </form>
+      <Button variant="contained" color="primary" component={Link} to="/add-user">
+        Add User
+      </Button>
+      <List>
+        {users.map(user => (
+          <ListItem key={user.id}>
+            <ListItemText primary={`${user.name} - ${user.email}`} />
+            <Button variant="outlined" color="secondary" component={Link} to={`/users/${user.id}/timeoffs`}>
+              Add Time-Off
+            </Button>
+          </ListItem>
+        ))}
+      </List>
     </Container>
   );
 }
 
-export default TimeOffForm;
+export default UserList;

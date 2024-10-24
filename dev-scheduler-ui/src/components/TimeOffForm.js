@@ -1,40 +1,60 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { TextField, Button, Container, Typography } from '@mui/material';
+import axiosInstance from '../axiosConfig';
 
 function TimeOffForm() {
-  const { id } = useParams();
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [reason, setReason] = useState('');
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { userId } = useParams(); // Get userId from URL parameters
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    axios.post(`/users/${id}/timeoffs`, { startDate, endDate, reason })
+    setError(null); // Reset error state
+    axiosInstance.post(`/users/${userId}/timeoffs`, { startDate, endDate })
       .then(() => navigate('/'))
-      .catch(error => console.error('Error adding time-off:', error));
+      .catch(error => {
+        console.error('Error creating time-off:', error);
+        setError('Failed to create time-off. Please try again.');
+      });
   };
 
   return (
-    <div>
-      <h1>Add Time-Off</h1>
+    <Container maxWidth="sm">
+      <Typography variant="h4" component="h1" gutterBottom>
+        Add Time-Off
+      </Typography>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Start Date:</label>
-          <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-        </div>
-        <div>
-          <label>End Date:</label>
-          <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-        </div>
-        <div>
-          <label>Reason:</label>
-          <input type="text" value={reason} onChange={(e) => setReason(e.target.value)} />
-        </div>
-        <button type="submit">Add Time-Off</button>
+        <TextField
+          label="Start Date"
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          fullWidth
+          margin="normal"
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+        <TextField
+          label="End Date"
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+          fullWidth
+          margin="normal"
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+        {error && <Typography color="error">{error}</Typography>}
+        <Button type="submit" variant="contained" color="primary" fullWidth>
+          Add Time-Off
+        </Button>
       </form>
-    </div>
+    </Container>
   );
 }
 

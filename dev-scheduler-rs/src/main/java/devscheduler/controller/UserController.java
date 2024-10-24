@@ -80,7 +80,7 @@ public class UserController {
 
     @PostMapping("/{id}/timeoffs")
     @Operation(summary = "Add time-off for a user")
-    public ResponseEntity<TimeOff> addTimeOff(@PathVariable Long id, @RequestBody TimeOff timeOff) {
+    public ResponseEntity<TimeOff> addTimeOff(@PathVariable("id") Long id, @RequestBody TimeOff timeOff) {
         logger.info("Adding time-off for user with ID: {}", id);
         return userRepository.findById(id)
                 .map(user -> {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Container, Typography } from '@mui/material';
+import axiosInstance from '../axiosConfig';
 
 function UserForm() {
   const [name, setName] = useState('');
@@ -10,7 +10,7 @@ function UserForm() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    axios.post('/users', { name, email })
+    axiosInstance.post('/users', { name, email })
       .then(() => navigate('/'))
       .catch(error => console.error('Error creating user:', error));
   };
