@@ -73,3 +73,6 @@ spring.datasource.url=jdbc:derby:/path/to/your/database;create=true
 
 CSV File
 The project reads user data from a CSV file located in the resources directory. The CSV file should be named dev-users.csv and have the following format:
+
+Accessing Swagger UI
+After starting your Spring Boot application, you can access the Swagger UI at http://localhost:8080/swagger-ui.html.  This setup will provide a user-friendly interface to interact with your API and view the API documentation.
